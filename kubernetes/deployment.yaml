@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sre-hello-world-app
+  name: sre-hello-world-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sre-hello-world-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: sre-hello-world-app
+    spec:
+      containers:
+        - image: gcr.io/sre-role/github.com/leec2394/sre-hello-world-app
+          imagePullPolicy: IfNotPresent
+          name: sre-hello-world-app-sha256-1
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: sre-hello-world-app
+  name: sre-hello-world-app-hpa-elhm
+  namespace: default
+spec:
+  maxReplicas: 5
+  metrics:
+    - resource:
+        name: cpu
+        targetAverageUtilization: 80
+      type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sre-hello-world-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+  labels:
+    app: sre-hello-world-app
+  name: sre-hello-world-app-service
+  namespace: default
+spec:
+  clusterIP: 10.7.245.242
+  externalTrafficPolicy: Cluster
+  ports:
+    - nodePort: 30065
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: sre-hello-world-app
+  sessionAffinity: None
+  type: LoadBalancer
