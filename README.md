@@ -9,6 +9,11 @@ A basic hello world application with nodejs
 **Local builds**
 
 Via Docker
-* ```docker built -t sre-hello-world-app .```
+* ```docker build -t sre-hello-world-app .```
 * ```docker run --rm -p 8080:8080 sre-hello-world-app:latest```
+* ```curl http://localhost:8080```
+
+Via node
+* ```npm install```
+* ```node index.js```
 * ```curl http://localhost:8080```
