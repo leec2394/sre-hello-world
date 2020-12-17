@@ -6,7 +6,7 @@ metadata:
   name: sre-hello-world-app
   namespace: default
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: sre-hello-world-app
@@ -30,7 +30,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: sre-hello-world-app
-  name: sre-hello-world-app-hpa-elhm
+  name: sre-hello-world-app-hpa-xgne
   namespace: default
 spec:
   maxReplicas: 5
@@ -55,10 +55,10 @@ metadata:
   name: sre-hello-world-app-service
   namespace: default
 spec:
-  clusterIP: 10.7.245.242
+  clusterIP: 10.25.27.129
   externalTrafficPolicy: Cluster
   ports:
-    - nodePort: 30065
+    - nodePort: 31348
       port: 80
       protocol: TCP
       targetPort: 8080
